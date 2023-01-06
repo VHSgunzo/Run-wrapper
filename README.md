@@ -1,5 +1,5 @@
 # Run-wrapper
-ELF wrapper for RunImage Run.sh script in the extracted form
+ELF wrapper for [RunImage](https://github.com/VHSgunzo/runimage) Run.sh script in the extracted form
 
 ## To get started:
 * **Download the latest revision**
