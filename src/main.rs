@@ -1,15 +1,15 @@
-#![allow(non_snake_case)]
-extern crate exec;
+#![allow(non_snake_case, dead_code)]
+extern crate execute;
 extern crate which;
 extern crate chrono;
 use chrono::Local;
 use which::which;
-use exec::Command;
-use std::{env, path::{self, Path, PathBuf}, process::exit};
+use execute::Execute;
+use std::{env, path::{self, Path, PathBuf}, process::{exit, Command}};
 
 static PATH_SEP: char = path::MAIN_SEPARATOR;
 static RED: &str = "\x1b[91m";
-// static BLUE: &str = "\x1b[94m";
+static BLUE: &str = "\x1b[94m";
 static GREEN: &str = "\x1b[92m";
 static YELLOW: &str = "\x1b[33m";
 static RESETCOLOR: &str = "\x1b[0m";
@@ -65,17 +65,17 @@ fn main() {
     let self_exe_dir = self_exe.parent().unwrap().to_str().unwrap();
     let mut exec_args: Vec<String> = env::args().collect();
     let argv0 = exec_args.remove(0);
-    exec_args.insert(0, format!("{}/Run.sh", self_exe_dir));
+    exec_args.insert(0, format!("{}{}Run.sh", self_exe_dir, PATH_SEP));
     let argv0_name = basename(&argv0);
     let mut which_argv0= PathBuf::new();
     let mut argv0_dir= PathBuf::new();
     if let Ok(res) = which(&argv0_name) { which_argv0 = res };
     if let Ok(res) = Path::new(&dirname(&argv0)).canonicalize() { argv0_dir = res }
-        else if let Ok(res) = Path::new(&dirname(&which_argv0
-            .as_os_str().to_str().unwrap())).canonicalize() { argv0_dir = res };
-    let argv0_path = format!("{}/{}", argv0_dir.display(), argv0_name);
+    else if let Ok(res) = Path::new(&dirname(&which_argv0.as_os_str().to_str().unwrap()))
+            .canonicalize() { argv0_dir = res };
+    let argv0_path = format!("{}{}{}", argv0_dir.display(), PATH_SEP, argv0_name);
 
-    let static_bash = format!("{}/static/bash", self_exe_dir);
+    let static_bash = format!("{}{}static{}bash", self_exe_dir, PATH_SEP, PATH_SEP);
     let static_bash_path = Path::new(&static_bash);
     if ! static_bash_path.is_file() {
         error_msg(&format!("Static bash not found: '{}'", static_bash_path.display()));
@@ -86,9 +86,8 @@ fn main() {
     env::set_var("RUNDIR", self_exe_dir);
     env::set_var("RUNSRC", argv0_path);
 
-    let err = Command::new(static_bash)
-        .args(&exec_args)
-        .exec();
-    error_msg(&err.to_string());
-    exit(1);
+    if let Err(err) = Command::new(static_bash).args(&exec_args).execute() {
+        error_msg(&err.to_string());
+        exit(1);
+    };
 }
