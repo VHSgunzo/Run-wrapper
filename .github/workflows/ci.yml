@@ -12,15 +12,17 @@ jobs:
     name: Run-wrapper
     runs-on: ubuntu-latest
     steps:
-      - name: Build
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Toolchain stable
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - run: cargo build --release
+      - name: Build
+        run: cargo build --release
       - name: Release
-      - uses: softprops/action-gh-release@v1
-      - if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: target/x86_64-unknown-linux-musl/release/Run
         env:
