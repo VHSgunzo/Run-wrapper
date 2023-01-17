@@ -10,6 +10,5 @@ description = "ELF wrapper for RunImage Run.sh script in the extracted form"
 strip = "symbols"
 
 [dependencies]
-execute = "*"
 which = "*"
 chrono = "*"

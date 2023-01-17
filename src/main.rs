@@ -1,11 +1,9 @@
 #![allow(non_snake_case, dead_code)]
-extern crate execute;
 extern crate which;
 extern crate chrono;
 use chrono::Local;
 use which::which;
-use execute::Execute;
-use std::{env, path::{self, Path, PathBuf}, process::{exit, Command}};
+use std::{env, path::{self, Path, PathBuf}, process::{exit, Command}, os::unix::process::CommandExt};
 
 static PATH_SEP: char = path::MAIN_SEPARATOR;
 static RED: &str = "\x1b[91m";
@@ -86,8 +84,7 @@ fn main() {
     env::set_var("RUNDIR", self_exe_dir);
     env::set_var("RUNSRC", argv0_path);
 
-    if let Err(err) = Command::new(static_bash).args(&exec_args).execute() {
-        error_msg(&err.to_string());
-        exit(1);
-    };
+    let err = Command::new(static_bash).args(&exec_args).exec();
+    error_msg(&err.to_string());
+    exit(1);
 }
