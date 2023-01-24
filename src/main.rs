@@ -23,8 +23,8 @@ pub fn dirname(path: &str) -> String {
     let mut pieces: Vec<&str> = path.split('/').collect();
     if pieces.len() == 1 || path.is_empty() {
         // return ".".to_string();
-    } else if !path.starts_with('/') && 
-        !path.starts_with('.') && 
+    } else if !path.starts_with('/') &&
+        !path.starts_with('.') &&
         !path.starts_with('~') {
             pieces.insert(0, ".");
     } else if pieces.len() == 2 && path.starts_with('/') {
@@ -71,7 +71,7 @@ fn main() {
     if let Ok(res) = which(&argv0_name) { which_argv0 = res };
     if let Ok(res) = Path::new(&dirname(&argv0)).canonicalize() { argv0_dir = res }
     else if let Ok(res) = Path::new(&dirname(&which_argv0.as_os_str().to_str().unwrap()))
-            .canonicalize() { argv0_dir = res };
+        .canonicalize() { argv0_dir = res };
     let argv0_path = format!("{}{}{}", argv0_dir.display(), '/', argv0_name);
 
     let static_bash = format!("{}{}static{}bash", self_exe_dir, '/', '/');
