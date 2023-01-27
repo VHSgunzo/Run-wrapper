@@ -7,11 +7,11 @@ repository = "https://github.com/VHSgunzo/Run-wrapper"
 description = "ELF wrapper for RunImage Run.sh script in the extracted form"
 
 [profile.release]
-strip = "symbols"
-opt-level = "z"
 lto = true
-codegen-units = 1
 panic = "abort"
+opt-level = "z"
+strip = "symbols"
+codegen-units = 1
 
 [dependencies]
 which = "*"
