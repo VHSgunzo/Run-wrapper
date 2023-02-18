@@ -64,7 +64,7 @@ fn main() {
     let self_exe_dir = self_exe.parent().unwrap().to_str().unwrap();
     let mut exec_args: Vec<String> = env::args().collect();
     let argv0 = exec_args.remove(0);
-    exec_args.insert(0, format!("{}{}Run.sh", self_exe_dir, '/'));
+    exec_args.insert(0, format!("{}/Run.sh", self_exe_dir));
     let argv0_name = basename(&argv0);
     let mut which_argv0= PathBuf::new();
     let mut argv0_dir= PathBuf::new();
@@ -72,9 +72,9 @@ fn main() {
     if let Ok(res) = Path::new(&dirname(&argv0)).canonicalize() { argv0_dir = res }
     else if let Ok(res) = Path::new(&dirname(&which_argv0.as_os_str().to_str().unwrap()))
         .canonicalize() { argv0_dir = res };
-    let argv0_path = format!("{}{}{}", argv0_dir.display(), '/', argv0_name);
+    let argv0_path = format!("{}/{}", argv0_dir.display(), argv0_name);
 
-    let static_bash = format!("{}{}static{}bash", self_exe_dir, '/', '/');
+    let static_bash = format!("{}/static/bash", self_exe_dir);
     let static_bash_path = Path::new(&static_bash);
     if ! static_bash_path.is_file() {
         error_msg(&format!("Static bash not found: '{}'", static_bash_path.display()));
