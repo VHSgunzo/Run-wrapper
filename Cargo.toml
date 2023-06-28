@@ -13,6 +13,10 @@ opt-level = "z"
 strip = "symbols"
 codegen-units = 1
 
+[profile.dev]
+panic = "abort"
+opt-level = 0
+
 [dependencies]
 which = "*"
 chrono = "*"

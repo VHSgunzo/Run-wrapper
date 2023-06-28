@@ -1,0 +1,16 @@
+# Maintainer: VHSgunzo <vhsgunzo.github.io>
+
+pkgname='Run-wrapper'
+pkgver='0.0.5'
+pkgrel='1'
+pkgbase="$pkgname"
+pkgdesc='ELF wrapper for RunImage Run.sh script in the extracted form'
+url="https://github.com/VHSgunzo/runimage-utils"
+arch=('x86_64')
+license=('MIT')
+source=('Run')
+sha256sums=('SKIP')
+
+package() {
+  install -Dm755 Run "${pkgdir}/var/RunDir/Run"
+}

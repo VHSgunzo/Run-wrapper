@@ -13,5 +13,8 @@ rustup default nightly
 rustup target add x86_64-unknown-linux-musl
 rustup component add rust-src --toolchain nightly
 cargo build --release
+cp -f target/x86_64-unknown-linux-musl/release/{Run,Run-upx} .
+cp -f Run pkgbuild
+(cd pkgbuild && makepkg -fsCc --noconfirm --nodeps)
 ```
 * Or take an already precompiled binary file from the [releases](https://github.com/VHSgunzo/Run-wrapper/releases)
