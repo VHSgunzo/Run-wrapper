@@ -2,16 +2,16 @@
 pkgname='Run-wrapper'
 pkgver='0.0.5'
 pkgrel='1'
-pkgbase="${pkgname}"
+pkgbase="Run"
 pkgdesc='Launching an executable file with environment variables from a specific process id'
 arch=("aarch64" "x86_64")
 url="https://github.com/VHSgunzo/${pkgname}"
-provides=("${pkgname}")
-conflicts=("${pkgname}")
+provides=("${pkgbase}")
+conflicts=("${pkgbase}")
 license=('MIT')
-source=("https://github.com/VHSgunzo/${pkgname}/releases/download/v${pkgver}/${pkgname}-${CARCH}-Linux")
+source=("https://github.com/Azathothas/${pkgname}/releases/download/v${pkgver}/${pkgbase}-${CARCH}-Linux")
 sha256sums=('SKIP')
 
 package() {
-    install -Dm755 "${pkgname}-${CARCH}-Linux" "${pkgdir}/var/RunDir/Run"
+    install -Dm755 "${pkgbase}-${CARCH}-Linux" "${pkgdir}/var/RunDir/Run"
 }
