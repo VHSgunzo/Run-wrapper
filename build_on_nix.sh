@@ -156,7 +156,7 @@ sudo chroot "${ALPINE_CHROOT}" bash -c '
   cargo build --target "$RUST_TARGET" --release --jobs="$(($(nproc)+1))" --keep-going
   find "./target/$RUST_TARGET/release" -maxdepth 1 -type f -exec file -i "{}" \; | grep "application/.*executable" | cut -d":" -f1 | xargs realpath | xargs -I {} cp --force {} /build-bins/
   find "/build-bins/" -type f -exec strip --strip-debug --strip-dwo --strip-unneeded -R ".comment" -R ".gnu.version" --preserve-dates "{}" \; 2>/dev/null
-  find "/build-bins/" -type f -exec bash -c '\''mv "$0" "${0}-$(uname -m)-$(uname -s)"'\'' {} \; 2>/dev/null
+  find "/build-bins/" -type f ! -name "*.txt" -exec  bash -c '\''mv "$0" "${0}-$(uname -m)-$(uname -s)"'\'' {} \; 2>/dev/null
   find "/build-bins/" -type f | xargs realpath | xargs -I {} upx --best "{}" -f --force-overwrite -o"{}.upx" -qq 2>/dev/null
   popd >/dev/null 2>&1
 '
