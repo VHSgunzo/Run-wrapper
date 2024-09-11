@@ -9,7 +9,7 @@ url="https://github.com/VHSgunzo/${pkgname}"
 provides=("${pkgbase}")
 conflicts=("${pkgbase}")
 license=('MIT')
-source=("https://github.com/Azathothas/${pkgname}/releases/download/v${pkgver}/${pkgbase}-${CARCH}-Linux")
+source=("https://github.com/VHSgunzo/${pkgname}/releases/download/v${pkgver}/${pkgbase}-${CARCH}-Linux")
 sha256sums=('SKIP')
 
 package() {
