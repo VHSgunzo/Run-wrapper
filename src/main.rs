@@ -63,16 +63,16 @@ fn main() {
     let self_exe = env::current_exe().unwrap();
     let self_exe_dir = self_exe.parent().unwrap().to_str().unwrap();
     let mut exec_args: Vec<String> = env::args().collect();
-    let argv0 = exec_args.remove(0);
+    let arg0 = exec_args.remove(0);
     exec_args.insert(0, format!("{}/Run.sh", self_exe_dir));
-    let argv0_name = basename(&argv0);
-    let mut which_argv0= PathBuf::new();
-    let mut argv0_dir= PathBuf::new();
-    if let Ok(res) = which(&argv0_name) { which_argv0 = res };
-    if let Ok(res) = Path::new(&dirname(&argv0)).canonicalize() { argv0_dir = res }
-    else if let Ok(res) = Path::new(&dirname(&which_argv0.as_os_str().to_str().unwrap()))
-        .canonicalize() { argv0_dir = res };
-    let argv0_path = format!("{}/{}", argv0_dir.display(), argv0_name);
+    let arg0_name = basename(&arg0);
+    let mut which_arg0= PathBuf::new();
+    let mut arg0_dir= PathBuf::new();
+    if let Ok(res) = which(&arg0_name) { which_arg0 = res };
+    if let Ok(res) = Path::new(&dirname(&arg0)).canonicalize() { arg0_dir = res }
+    else if let Ok(res) = Path::new(&dirname(&which_arg0.as_os_str().to_str().unwrap()))
+        .canonicalize() { arg0_dir = res };
+    let arg0_path = format!("{}/{}", arg0_dir.display(), arg0_name);
 
     let static_bash = format!("{}/static/bash", self_exe_dir);
     let static_bash_path = Path::new(&static_bash);
@@ -81,9 +81,9 @@ fn main() {
         exit(1);
      };
 
-    env::set_var("ARGV0", argv0);
+    env::set_var("ARG0", arg0);
     env::set_var("RUNDIR", self_exe_dir);
-    env::set_var("RUNSRC", argv0_path);
+    env::set_var("RUNSRC", arg0_path);
 
     let err = Command::new(static_bash).args(&exec_args).exec();
     error_msg(&err.to_string());

@@ -1,6 +1,6 @@
 [package]
 name = "Run"
-version = "0.0.5"
+version = "0.0.6"
 readme = "README.md"
 license-file = "LICENSE"
 repository = "https://github.com/VHSgunzo/Run-wrapper"
