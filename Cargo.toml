@@ -1,9 +1,6 @@
-#Enable unstable feature in Cargo
-cargo-features = ["profile-rustflags"]
-
 [package]
 name = "Run"
-version = "0.0.5"
+version = "0.0.6"
 edition = "2021"
 readme = "README.md"
 license-file = "LICENSE"
@@ -24,7 +21,3 @@ opt-level = 0
 [dependencies]
 which = "*"
 chrono = "*"
-
-[unstable]
-build-std = ["std", "panic_abort"]
-build-std-features = ["panic_immediate_abort"]
