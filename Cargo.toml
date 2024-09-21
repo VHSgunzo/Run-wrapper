@@ -1,6 +1,10 @@
+#Enable unstable feature in Cargo
+cargo-features = ["profile-rustflags"]
+
 [package]
 name = "Run"
 version = "0.0.5"
+edition = "2021"
 readme = "README.md"
 license-file = "LICENSE"
 repository = "https://github.com/VHSgunzo/Run-wrapper"
@@ -9,8 +13,8 @@ description = "ELF wrapper for RunImage Run.sh script in the extracted form"
 [profile.release]
 lto = true
 panic = "abort"
-opt-level = "z"
-strip = "symbols"
+opt-level = 3
+strip = true
 codegen-units = 1
 
 [profile.dev]
@@ -20,3 +24,7 @@ opt-level = 0
 [dependencies]
 which = "*"
 chrono = "*"
+
+[unstable]
+build-std = ["std", "panic_abort"]
+build-std-features = ["panic_immediate_abort"]

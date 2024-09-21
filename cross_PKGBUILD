@@ -1,0 +1,17 @@
+# Maintainer: VHSgunzo <vhsgunzo.github.io>
+pkgname='Run-wrapper'
+pkgver='0.0.5'
+pkgrel='1'
+pkgbase="Run"
+pkgdesc='Launching an executable file with environment variables from a specific process id'
+arch=("aarch64" "x86_64")
+url="https://github.com/VHSgunzo/${pkgname}"
+provides=("${pkgbase}")
+conflicts=("${pkgbase}")
+license=('MIT')
+source=("https://github.com/VHSgunzo/${pkgname}/releases/download/v${pkgver}/${pkgbase}-${CARCH}-Linux")
+sha256sums=('SKIP')
+
+package() {
+    install -Dm755 "${pkgbase}-${CARCH}-Linux" "${pkgdir}/var/RunDir/Run"
+}
