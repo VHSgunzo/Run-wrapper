@@ -13,7 +13,7 @@ rustup default nightly
 rustup target add x86_64-unknown-linux-musl
 rustup component add rust-src --toolchain nightly
 cargo build --release
-cp -f target/x86_64-unknown-linux-musl/release/{Run,Run-upx} .
+mv target/x86_64-unknown-linux-musl/release/Run .
 cp -f Run pkgbuild
 (cd pkgbuild && makepkg -fsCc --noconfirm --nodeps)
 ```
