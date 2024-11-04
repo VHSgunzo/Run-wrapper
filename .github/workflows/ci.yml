@@ -24,24 +24,35 @@ jobs:
           override: true
           target: x86_64-unknown-linux-musl
 
-      - name: Build Run-wrapper
+      - name: Install deps
         run: >
           sudo bash -c 'apt update && apt install upx binutils -y';
           rustup component add rust-src --toolchain nightly;
+          cargo install cross;
+
+      - name: Build x86_64
+        run: >
+          cargo clean;
           cargo build --release;
-          strip -s -R .comment -R .gnu.version --strip-unneeded target/x86_64-unknown-linux-musl/release/Run;
-          upx -9 --best target/x86_64-unknown-linux-musl/release/Run -o target/x86_64-unknown-linux-musl/release/Run-upx;
-          cp -f target/x86_64-unknown-linux-musl/release/{Run,Run-upx} . ;
-          cp -f Run pkgbuild ;
+          mv target/x86_64-unknown-linux-musl/release/Run Run-x86_64;
+      
+      - name: Build aarch64
+        run: >
+          cargo clean;
+          cross build --release --target aarch64-unknown-linux-musl;
+          mv target/aarch64-unknown-linux-musl/release/Run Run-aarch64;
+
+      - name: Strip
+        run: >
+          strip -s -R .comment -R .gnu.version --strip-unneeded Run-x86_64;
 
       - name: Build archlinux packages
         uses: countstarlight/arch-makepkg-action@master
         with:
           scripts: |
-            cd pkgbuild;
-            makepkg -fsCc --noconfirm --nodeps;
-            cp -f Run-wrapper*.pkg.* ../ ;
-            cd ../ ;
+            cp -f Run-* pkgbuild;
+            cd pkgbuild && for arch in aarch64 x86_64; do CARCH=$arch makepkg -fsCc --noconfirm --nodeps; done;
+            cp -f Run-wrapper*.pkg.* ../ && cd ../ ;
 
       - name: Release
         uses: softprops/action-gh-release@v1

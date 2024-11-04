@@ -1,25 +1,13 @@
-#![allow(non_snake_case, dead_code)]
-extern crate which;
-extern crate chrono;
 use std::env;
 use which::which;
-use chrono::Local;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::{exit, Command};
 use std::os::unix::process::CommandExt;
 
 static RED: &str = "\x1b[91m";
-static BLUE: &str = "\x1b[94m";
-static GREEN: &str = "\x1b[92m";
-static YELLOW: &str = "\x1b[33m";
 static RESETCOLOR: &str = "\x1b[0m";
 
-pub fn basename(path: &str) -> String {
-    let pieces: Vec<&str> = path.rsplit('/').collect();
-    return pieces.get(0).unwrap().to_string();
-}
-
-pub fn dirname(path: &str) -> String {
+fn dirname(path: &str) -> String {
     let mut pieces: Vec<&str> = path.split('/').collect();
     if pieces.len() == 1 || path.is_empty() {
         // return ".".to_string();
@@ -31,61 +19,51 @@ pub fn dirname(path: &str) -> String {
         pieces.insert(0, "");
     };
     pieces.pop();
-    return pieces.join(&'/'.to_string());
+    pieces.join(&'/'.to_string())
 }
 
-pub fn get_env_var(env_var: &str) -> String {
-    let mut ret = "".to_string();
-    if let Ok(res) = env::var(env_var) { ret = res };
-    return ret;
-}
-
-pub fn error_msg(msg: &str) {
-    let date = Local::now().format("%Y.%m.%d %H:%M:%S");
-    eprintln!("{}[ ERROR ][{}]: {}{}", RED, date, msg, RESETCOLOR);
-}
-
-pub fn info_msg(msg: &str) {
-    if ! get_env_var("QUIET_MODE").eq("1") {
-        let date = Local::now().format("%Y.%m.%d %H:%M:%S");
-        println!("{}[ INFO ][{}]: {}{}", GREEN, date, msg, RESETCOLOR);
-    };
-}
-
-pub fn warn_msg(msg: &str) {
-    if ! get_env_var("QUIET_MODE").eq("1") {
-        let date = Local::now().format("%Y.%m.%d %H:%M:%S");
-        println!("{}[ WARNING ][{}]: {}{}", YELLOW, date, msg, RESETCOLOR);
-    };
+macro_rules! error_msg {
+    ($msg:expr) => {{
+        eprintln!("{}[ ERROR ]: {}{}", RED, $msg, RESETCOLOR);
+    }};
 }
 
 fn main() {
     let self_exe = env::current_exe().unwrap();
-    let self_exe_dir = self_exe.parent().unwrap().to_str().unwrap();
+    let self_exe_dir = self_exe.parent().unwrap();
+
     let mut exec_args: Vec<String> = env::args().collect();
-    let argv0 = exec_args.remove(0);
-    exec_args.insert(0, format!("{}/Run.sh", self_exe_dir));
-    let argv0_name = basename(&argv0);
-    let mut which_argv0= PathBuf::new();
-    let mut argv0_dir= PathBuf::new();
-    if let Ok(res) = which(&argv0_name) { which_argv0 = res };
-    if let Ok(res) = Path::new(&dirname(&argv0)).canonicalize() { argv0_dir = res }
-    else if let Ok(res) = Path::new(&dirname(&which_argv0.as_os_str().to_str().unwrap()))
-        .canonicalize() { argv0_dir = res };
-    let argv0_path = format!("{}/{}", argv0_dir.display(), argv0_name);
 
-    let static_bash = format!("{}/static/bash", self_exe_dir);
-    let static_bash_path = Path::new(&static_bash);
-    if ! static_bash_path.is_file() {
-        error_msg(&format!("Static bash not found: '{}'", static_bash_path.display()));
-        exit(1);
-     };
+    let arg0 = PathBuf::from(exec_args.remove(0));
+    let arg0_name = arg0.file_name().unwrap();
+    let arg0_str = arg0.to_str().unwrap();
 
-    env::set_var("ARGV0", argv0);
+    let arg0_dir = PathBuf::from(dirname(arg0_str)).canonicalize()
+        .unwrap_or_else(|_|{
+            if let Ok(which_arg0) = which(arg0_name) {
+                which_arg0.parent().unwrap().to_path_buf()
+            } else {
+                error_msg!("Failed to find ARG0 dir!");
+                exit(1)
+            }
+    });
+
+    let static_bash = self_exe_dir.join("static").join("bash");
+    if !static_bash.is_file() {
+        error_msg!("Static bash not found!");
+        exit(1)
+    }
+    exec_args.insert(0, format!("{}/Run.sh", self_exe_dir.display()));
+
+    env::set_var("ARG0", arg0_str);
     env::set_var("RUNDIR", self_exe_dir);
-    env::set_var("RUNSRC", argv0_path);
+    env::set_var("RUNSRC", arg0_dir.join(arg0_name));
+
+    drop(arg0);
+    drop(self_exe);
+    drop(arg0_dir);
 
     let err = Command::new(static_bash).args(&exec_args).exec();
-    error_msg(&err.to_string());
-    exit(1);
+    error_msg!(err.to_string());
+    exit(1)
 }

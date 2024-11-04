@@ -1,16 +1,18 @@
 [package]
 name = "Run"
-version = "0.0.5"
+version = "0.0.6"
 readme = "README.md"
-license-file = "LICENSE"
+license = "MIT"
 repository = "https://github.com/VHSgunzo/Run-wrapper"
 description = "ELF wrapper for RunImage Run.sh script in the extracted form"
+edition = "2021"
 
 [profile.release]
 lto = true
 panic = "abort"
 opt-level = "z"
 strip = "symbols"
+debug  = false
 codegen-units = 1
 
 [profile.dev]
@@ -18,5 +20,4 @@ panic = "abort"
 opt-level = 0
 
 [dependencies]
-which = "*"
-chrono = "*"
+which = "7.0.0"
