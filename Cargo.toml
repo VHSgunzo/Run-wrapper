@@ -1,6 +1,8 @@
+cargo-features = ["panic-immediate-abort"]
+
 [package]
 name = "Run"
-version = "0.0.6"
+version = "0.0.7"
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/VHSgunzo/Run-wrapper"
@@ -9,15 +11,14 @@ edition = "2021"
 
 [profile.release]
 lto = true
-panic = "abort"
+debug  = false
 opt-level = "z"
 strip = "symbols"
-debug  = false
 codegen-units = 1
+panic = "immediate-abort"
 
 [profile.dev]
-panic = "abort"
 opt-level = 0
 
 [dependencies]
-which = "7.0.0"
+which = "8.0.0"

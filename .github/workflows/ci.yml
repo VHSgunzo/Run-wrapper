@@ -35,7 +35,7 @@ jobs:
           cargo clean;
           cargo build --release;
           mv target/x86_64-unknown-linux-musl/release/Run Run-x86_64;
-      
+
       - name: Build aarch64
         run: >
           cargo clean;
@@ -46,13 +46,13 @@ jobs:
         run: >
           strip -s -R .comment -R .gnu.version --strip-unneeded Run-x86_64;
 
-      - name: Build archlinux packages
-        uses: countstarlight/arch-makepkg-action@master
-        with:
-          scripts: |
-            cp -f Run-* pkgbuild;
-            cd pkgbuild && for arch in aarch64 x86_64; do CARCH=$arch makepkg -fsCc --noconfirm --nodeps; done;
-            cp -f Run-wrapper*.pkg.* ../ && cd ../ ;
+      # - name: Build archlinux packages
+      #   uses: countstarlight/arch-makepkg-action@master
+      #   with:
+      #     scripts: |
+      #       cp -f Run-* pkgbuild;
+      #       cd pkgbuild && for arch in aarch64 x86_64; do CARCH=$arch makepkg -fsCc --noconfirm --nodeps; done;
+      #       cp -f Run-wrapper*.pkg.* ../ && cd ../ ;
 
       - name: Release
         uses: softprops/action-gh-release@v1

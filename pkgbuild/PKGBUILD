@@ -1,7 +1,7 @@
 # Maintainer: VHSgunzo <vhsgunzo.github.io>
 
 pkgname='Run-wrapper'
-pkgver='0.0.6'
+pkgver='0.0.7'
 pkgrel='1'
 binname="Run"
 pkgdesc='ELF wrapper for RunImage Run.sh script in the extracted form'
