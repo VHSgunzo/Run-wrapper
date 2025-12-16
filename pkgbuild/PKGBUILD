@@ -2,7 +2,7 @@
 
 pkgname='Run-wrapper'
 pkgver='0.0.7'
-pkgrel='1'
+pkgrel='2'
 binname="Run"
 pkgdesc='ELF wrapper for RunImage Run.sh script in the extracted form'
 url="https://github.com/VHSgunzo/Run-wrapper"
@@ -13,4 +13,5 @@ sha256sums=('SKIP')
 
 package() {
     install -Dm755 "${binname}-${CARCH}" "${pkgdir}/var/RunDir/${binname}"
+    ln -sfr "${pkgdir}/var/RunDir/${binname}" "${pkgdir}/var/RunDir/AppRun"
 }
